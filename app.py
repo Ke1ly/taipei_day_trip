@@ -77,7 +77,7 @@ async def get_attractions(request: Request,keyword: str | None = Query (None), p
 			cursor.execute("SELECT img_url FROM img JOIN attraction ON attraction.id = img.attraction_id WHERE attraction.id = %s",(result["id"],))
 			img_urls = cursor.fetchall()
 			url_list = [item['img_url'] for item in img_urls]
-			result["img"]=url_list
+			result["images"]=url_list
 
 	# 檢查是否有 nextPage，若有，設定 nextPage 值
 	if total_count["COUNT(*)"]>(offset + per_page):
@@ -95,7 +95,7 @@ async def get_attraction_by_id(request: Request,attractionId:int,cursor=Depends(
 	cursor.execute("SELECT img_url FROM img JOIN attraction ON attraction.id = img.attraction_id WHERE attraction.id = %s",(result["id"],))
 	img_urls = cursor.fetchall()
 	url_list = [item['img_url'] for item in img_urls]
-	result["img"]=url_list
+	result["images"]=url_list
 	return{"data":result}
 
 @app.get("/api/mrts")
