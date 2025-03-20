@@ -1,11 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-</head>
-<body>
-  
-</body>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taipei Day Trip 台北一日遊</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/index.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <div class="header-left">
+          <h1>台北一日遊</h1>
+        </div>
+        <div class="header-right">
+          <a href="/static/booking.html">預定行程</a>
+          <a href="">登入/註冊</a>
+        </div>
+      </div>
+    </header>
+    <section id="hero">
+      <div>
+        <h4>輕鬆享受台北一日悠閒</h4>
+        <p>探索每個角落，體驗城市的深度旅遊行程</p>
+        <search>
+          <form>
+            <input
+              type="search"
+              id="keyword"
+              placeholder="輸入景點名稱查詢"
+            /><button type="button" id="search-button">
+              <img src="/static/img/icon_search.png" alt="search-icon" />
+            </button>
+          </form>
+        </search>
+      </div>
+    </section>
+    <nav>
+      <img src="/static/img/left-arrow.png" alt="butoon-left" id="left-btn" />
+      <div id="mrt-list"></div>
+      <img
+        src="/static/img/right-arrow.png"
+        alt="butoon-right"
+        id="right-btn"
+      />
+    </nav>
+
+    <main><section id="attraction-section"></section></main>
+    <div id="observer-target"></div>
+    <footer>
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+    <template id="attraction-template">
+      <div class="attraction">
+        <figure>
+          <img alt="" src="" />
+          <figcaption class="attraction-name"></figcaption>
+        </figure>
+        <div class="attraction-tag">
+          <p class="attraction-category"></p>
+          <p class="attraction-mrt"></p>
+        </div>
+      </div>
+    </template>
+    <template id="mrt-template">
+      <button class="mrt-btn"></button>
+    </template>
+  </body>
 </html>
