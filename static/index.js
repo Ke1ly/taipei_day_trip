@@ -1,140 +1,167 @@
-let nextPage;
-let attractionsData;
+const searchBtn = document.getElementById("search-button");
 const template = document.getElementById("attraction-template");
 const attractionSection = document.getElementById("attraction-section");
+const mrtList = document.getElementById("mrt-list");
+const mrtBtns = document.querySelectorAll(".mrt-btn");
+const scrollBar = document.getElementById("mrt-list");
+const leftArrow = document.getElementById("left-btn");
+const rightArrow = document.getElementById("right-btn");
 
-async function showAttractions(page) {
-  // 依照 page 取得 attraction data
-  let response = await fetch(`/api/attractions?page=${page}`, {
-    method: "GET",
-  });
-  attractionsData = await response.json();
-  RenderAttraction();
-  nextPage = attractionsData["nextPage"];
-}
+let keyword = null;
+let nextPage;
+let attractionsData;
 
+// render function -- for attractions
 function RenderAttraction() {
-  // 針對每筆  attraction data 進行渲染
-  for (i = 0; i < attractionsData["data"].length; i++) {
-    let attractionItem = template.content.cloneNode(true);
-    // 渲染img
-    let attractionImg = attractionItem.querySelector("img");
-    let imgURL = attractionsData["data"][i]["images"][0];
-    attractionImg.src = imgURL;
-    attractionImg.alt = attractionsData["data"][i]["name"] + "的圖片";
+  try {
+    for (i = 0; i < attractionsData["data"].length; i++) {
+      let attractionItem = template.content.cloneNode(true);
+      // 渲染img
+      let attractionImg = attractionItem.querySelector("img");
+      let imgURL = attractionsData["data"][i]["images"][0];
+      attractionImg.src = imgURL;
+      attractionImg.alt = attractionsData["data"][i]["name"] + "的圖片";
 
-    // 渲染name
-    let attractionName = attractionItem.querySelector("figcaption");
-    attractionName.textContent = attractionsData["data"][i]["name"];
+      // 渲染name
+      let attractionName = attractionItem.querySelector("figcaption");
+      attractionName.textContent = attractionsData["data"][i]["name"];
 
-    // 渲染category
-    let div = attractionItem.querySelector("div");
-    let attractionCategory = div.querySelector(".attraction-category");
-    attractionCategory.textContent = attractionsData["data"][i]["category"];
+      // 渲染category
+      let div = attractionItem.querySelector("div");
+      let attractionCategory = div.querySelector(".attraction-category");
+      attractionCategory.textContent = attractionsData["data"][i]["category"];
 
-    //渲染 mrt
-    let attractionMRT = div.querySelector(".attraction-mrt");
-    attractionMRT.textContent = attractionsData["data"][i]["mrt"];
+      //渲染 mrt
+      let attractionMRT = div.querySelector(".attraction-mrt");
+      attractionMRT.textContent = attractionsData["data"][i]["mrt"];
 
-    // 掛載至畫面上
-    attractionSection.appendChild(attractionItem);
+      // 掛載至畫面上
+      attractionSection.appendChild(attractionItem);
+    }
+  } catch (error) {
+    console.error("渲染網頁時發生錯誤", error);
   }
 }
+
+// render all attractions
+async function showAttractions(page) {
+  try {
+    let response = await fetch(`/api/attractions?page=${page}`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      let errorData = await response.json();
+      throw new Error(errorData.message || "取得資料時發生錯誤");
+    }
+    attractionsData = await response.json();
+    RenderAttraction();
+    nextPage = attractionsData["nextPage"];
+  } catch (error) {
+    console.error("渲染網頁時發生錯誤", error);
+  }
+}
+
 showAttractions(0);
 
-//=========================================================
-// 依據 keyword 搜尋與渲染景點
-let searchBtn = document.getElementById("search-button");
-searchBtn.onclick = async function showAttractionsByKeyword() {
-  let keyword = document.getElementById("keyword").value;
-  let response = await fetch(`/api/attractions?keyword=${keyword}`, {
-    method: "GET",
-  });
-  attractionsData = await response.json();
-  attractionSection.textContent = "";
-  RenderAttraction();
-  nextPage = attractionsData["nextPage"];
-};
+// render attractions by keyword searching
+async function showAttractionsByKeyword(page) {
+  try {
+    keyword = document.getElementById("keyword").value;
+    let response = await fetch(
+      `/api/attractions?keyword=${keyword}&page=${page}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      let errorData = await response.json();
+      throw new Error(errorData.message || "取得資料時發生錯誤");
+    }
+    attractionsData = await response.json();
+    if (attractionsData["data"] == null) {
+      attractionSection.replaceChildren();
+    } else {
+      if (page == 0) {
+        attractionSection.replaceChildren();
+      }
+      RenderAttraction();
+      nextPage = attractionsData["nextPage"];
+    }
+  } catch (error) {
+    console.error("渲染網頁時發生錯誤", error);
+  }
+}
+searchBtn.addEventListener("click", () => showAttractionsByKeyword(0));
 
-//=========================================================
-// 渲染 MRT scroll bar 內容
+// render attractions by MRT-btn onclicking
+async function showAttractionsByMRT(mrtBtn, page) {
+  document.getElementById("keyword").value = mrtBtn;
+  showAttractionsByKeyword(page);
+}
+
+// render MRT scroll bar
 async function RenderMRT() {
-  let response = await fetch(`/api/mrts`, {
-    method: "GET",
-  });
-  let mrtData = await response.json();
+  try {
+    let response = await fetch(`/api/mrts`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      let errorData = await response.json();
+      throw new Error(errorData.message || "取得資料時發生錯誤");
+    }
+    let mrtData = await response.json();
 
-  const template = document.getElementById("mrt-template");
-  const mrtList = document.getElementById("mrt-list");
-  for (i = 0; i < mrtData["data"].length; i++) {
-    const mrtButton = template.content.cloneNode(true).children[0];
-    mrtButton.textContent = mrtData["data"][i];
-    mrtList.appendChild(mrtButton);
+    const template = document.getElementById("mrt-template");
+    for (i = 0; i < mrtData["data"].length; i++) {
+      const mrtButton = template.content.cloneNode(true).children[0];
+      mrtButton.textContent = mrtData["data"][i];
+      mrtButton.addEventListener("click", () =>
+        showAttractionsByMRT(mrtButton.textContent, 0)
+      );
+      mrtList.appendChild(mrtButton);
+    }
+  } catch (error) {
+    console.error("渲染網頁時發生錯誤", error);
   }
 }
 RenderMRT();
-// MRT scroll bar 左右按鈕效果
-const scrollBar = document.getElementById("mrt-list");
-const leftBtn = document.getElementById("left-btn");
-const rightBtn = document.getElementById("right-btn");
-const scrollAmount = 200;
-leftBtn.addEventListener("click", () => {
-  scrollBar.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+
+// left and right arrow feature in MRT scroll bar
+leftArrow.addEventListener("click", () => {
+  scrollBar.scrollBy({ left: -200, behavior: "smooth" });
 });
 
-rightBtn.addEventListener("click", () => {
-  scrollBar.scrollBy({ left: scrollAmount, behavior: "smooth" });
+rightArrow.addEventListener("click", () => {
+  scrollBar.scrollBy({ left: 200, behavior: "smooth" });
 });
 
-// MRT-btn 依據 MRT 搜尋與渲染景點
-window.onload = () => {
-  mrtBtns = document.querySelectorAll(".mrt-btn");
-  mrtBtns.forEach((mrtBtn) => {
-    mrtBtn.onclick = async function showAttractionsByMRT() {
-      let response = await fetch(
-        `/api/attractions?keyword=${mrtBtn.textContent}`,
-        {
-          method: "GET",
-        }
-      );
-      attractionsData = await response.json();
-      attractionSection.textContent = "";
-      RenderAttraction();
-      nextPage = attractionsData["nextPage"];
-    };
-  });
-};
-
-//=========================================================
-// 自動載入
-const observerTarget = document.getElementById("observer-target");
-observerTarget.style.height = "1px"; // 設定高度
-let isFetching = false; // 避免重複請求
-
-const observer = new IntersectionObserver(
-  async (entries) => {
-    if (entries[0].isIntersecting && !isFetching && nextPage != null) {
-      isFetching = true;
-      await showAttractions(nextPage);
-      isFetching = false;
-    }
-  },
-  { rootMargin: "0px", threshold: 0 }
-);
-observer.observe(observerTarget);
-
-//=========================================================
-let leftArrow = document.getElementById("left-btn");
 leftArrow.addEventListener("mouseover", function () {
   this.src = "/static/img/left-arrow-hovered.png";
 });
 leftArrow.addEventListener("mouseout", function () {
   this.src = "/static/img/left-arrow.png";
 });
-let rightArrow = document.getElementById("right-btn");
 rightArrow.addEventListener("mouseover", function () {
   this.src = "/static/img/right-arrow-hovered.png";
 });
 rightArrow.addEventListener("mouseout", function () {
   this.src = "/static/img/right-arrow.png";
 });
+
+// autoload feature
+const observerTarget = document.getElementById("observer-target");
+observerTarget.style.height = "1px";
+let isFetching = false;
+
+const observer = new IntersectionObserver(async (entries) => {
+  if (entries[0].isIntersecting && !isFetching && nextPage != null) {
+    isFetching = true;
+    if (keyword == null) {
+      await showAttractions(nextPage);
+    } else {
+      await showAttractionsByKeyword(nextPage);
+    }
+    isFetching = false;
+  }
+});
+observer.observe(observerTarget);

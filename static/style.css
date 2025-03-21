@@ -235,8 +235,6 @@ body {
 @media (max-width: 500px) {
   body {
     section#hero {
-      /* background-size: 1400px;
-      background-position: center bottom; */
       div {
         search {
           input {
