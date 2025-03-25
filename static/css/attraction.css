@@ -56,8 +56,8 @@ body {
       justify-content: space-around;
       section#attraction-images {
         position: relative;
-        border-radius: 5px;
         img.slide {
+          border-radius: 5px;
           position: absolute;
           width: 100%;
           height: 100%;
@@ -243,7 +243,9 @@ body {
         grid-template-rows: 350px 400px;
         grid-gap: 20px;
         section#attraction-images {
-          border-radius: 0px;
+          img.slide {
+            border-radius: 0px;
+          }
         }
         section#attraction-booking-form {
           padding: 0px 10px;
