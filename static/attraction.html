@@ -1,11 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attraction</title>
-</head>
-<body>
-  
-</body>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taipei Day Trip 台北一日遊</title>
+    <link rel="stylesheet" href="/static/css/attraction.css" />
+    <script src="/static/js/attraction.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <div class="header-left">
+          <a href="/">
+            <h1>台北一日遊</h1>
+          </a>
+        </div>
+        <div class="header-right">
+          <a href="/static/booking.html">預定行程</a>
+          <a href="">登入/註冊</a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="top">
+        <section id="attraction-images">
+          <img
+            src="/static/img/left-arrow-img.png"
+            alt="left-arrow button for the previous image"
+            id="prev-btn"
+          />
+
+          <img
+            src="/static/img/right-arrow-img.png"
+            alt="right-arrow button for the next image"
+            id="next-btn"
+          />
+
+          <div class="indicators"></div>
+        </section>
+        <section id="attraction-booking-form">
+          <h4 id="attraction-name"></h4>
+          <p id="attraction-category"></p>
+          <div id="booking-form">
+            <h6>訂購導覽行程</h6>
+            <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
+            <span class="bold">選擇日期：</span>
+            <input type="date" class="date" />
+            <form id="time-slot">
+              <span class="bold">選擇時間：</span>
+              <label>
+                <input
+                  type="radio"
+                  name="time-slot"
+                  value="上半天"
+                  id="forenoon"
+                />
+                上半天
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="time-slot"
+                  value="下半天"
+                  id="afternoon"
+                />
+                下半天
+              </label>
+            </form>
+            <span class="bold">導覽費用：</span>
+            <span id="price"> 新台幣 2500 元 </span>
+            <button>開始預約行程</button>
+          </div>
+        </section>
+      </section>
+      <hr />
+      <section id="attraction-info">
+        <div>
+          <p id="attraction-description"></p>
+        </div>
+        <div>
+          <h6>景點地址</h6>
+          <p id="attraction-address"></p>
+        </div>
+        <div>
+          <h6>交通方式</h6>
+          <p id="attraction-transport"></p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+  </body>
 </html>
