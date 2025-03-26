@@ -14,8 +14,11 @@ let attractionsData;
 // render function -- for attractions
 function RenderAttraction() {
   try {
-    for (i = 0; i < attractionsData["data"].length; i++) {
+    for (let i = 0; i < attractionsData["data"].length; i++) {
       let attractionItem = template.content.cloneNode(true);
+      let attractionA = attractionItem.querySelector("a");
+      attractionA.href = `/attraction/${attractionsData["data"][i]["id"]}`;
+
       // 渲染img
       let attractionImg = attractionItem.querySelector("img");
       let imgURL = attractionsData["data"][i]["images"][0];
@@ -112,7 +115,7 @@ async function RenderMRT() {
     let mrtData = await response.json();
 
     const template = document.getElementById("mrt-template");
-    for (i = 0; i < mrtData["data"].length; i++) {
+    for (let i = 0; i < mrtData["data"].length; i++) {
       const mrtButton = template.content.cloneNode(true).children[0];
       mrtButton.textContent = mrtData["data"][i];
       mrtButton.addEventListener("click", () =>
