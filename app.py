@@ -3,6 +3,12 @@ from fastapi.responses import FileResponse, JSONResponse
 import os
 from mysql.connector import pooling
 from fastapi.staticfiles import StaticFiles
+import jwt
+from datetime import datetime, timedelta
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+secret = os.getenv("JWT_SECRET_KEY")
+algorithm = os.getenv("ALGORITHM")
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -35,7 +41,7 @@ def get_db():
     cnx = cnxpool.get_connection()
     cursor = cnx.cursor(dictionary=True)
     try:
-        yield cursor 
+        yield cursor,cnx
     finally:
         cursor.close()
         cnx.close() 
@@ -55,7 +61,8 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     )
 
 @app.get("/api/attractions")
-async def get_attractions(request: Request,keyword: str | None = Query (None), page: int = Query(0),cursor=Depends(get_db)):
+async def get_attractions(request: Request,keyword: str | None = Query (None), page: int = Query(0), db=Depends(get_db)):
+	cursor, cnx = db
 	per_page=12
 	offset = page * per_page
 	if keyword:
@@ -89,7 +96,8 @@ async def get_attractions(request: Request,keyword: str | None = Query (None), p
 	return{"nextPage":nextPage, "data":result_attraction}
 
 @app.get("/api/attraction/{attractionId}")
-async def get_attraction_by_id(request: Request,attractionId:int,cursor=Depends(get_db)):
+async def get_attraction_by_id(request: Request, attractionId:int, db=Depends(get_db)):
+	cursor, cnx = db
 	cursor.execute("SELECT attraction.id,attraction.name,attraction.category, attraction.description,attraction.address,attraction.transport,mrt.mrt,attraction.lat,attraction.lng FROM attraction LEFT JOIN mrt ON attraction.mrt_id = mrt.id WHERE attraction.id = %s",(attractionId,))
 	result = cursor.fetchone()
 	if not result:
@@ -101,8 +109,44 @@ async def get_attraction_by_id(request: Request,attractionId:int,cursor=Depends(
 	return{"data":result}
 
 @app.get("/api/mrts")
-async def get_mrts(request: Request,cursor=Depends(get_db)):
+async def get_mrts(request: Request, db=Depends(get_db)):
+	cursor, cnx = db
 	cursor.execute("SELECT mrt.mrt, COUNT(attraction.id) AS attraction_count FROM mrt LEFT JOIN  attraction ON attraction.mrt_id = mrt.id GROUP BY mrt.mrt ORDER BY attraction_count DESC")
 	result_mrt=cursor.fetchall()
 	mrt_list=[result["mrt"]for result in result_mrt]
 	return{"data":mrt_list}
+
+@app.post("/api/user")
+async def sign_up(request: Request, db=Depends(get_db),body=Body(None) ):
+	cursor, cnx = db
+	if not body["name"] or not body["email"] or not body["password"]:
+		return {"error": True,"message": "請填打所有欄位"}
+	cursor.execute("SELECT * FROM user WHERE email = %s",(body["email"],))
+	existAccount = cursor.fetchone()
+	if existAccount:
+		return {"error": True,"message": "此 Email 已經註冊帳戶"}
+	cursor.execute("INSERT INTO user(name, email, password) VALUES (%s,%s,%s)",(body["name"],body["email"],body["password"]))
+	cnx.commit()
+	return {"ok": True}
+
+@app.get("/api/user/auth")
+async def auth(request: Request,credentials: HTTPAuthorizationCredentials = Security(HTTPBearer())):
+	token = credentials.credentials
+	try:
+		payload = jwt.decode(token, secret ,algorithms=["HS256"])
+		return {"data":{"id":payload["id"], "name":payload["name"], "email":payload["email"]}}
+	except jwt.InvalidTokenError:
+		return {"data":None}
+
+@app.put("/api/user/auth")
+async def sign_in(request: Request, db=Depends(get_db),body=Body(None)):
+	cursor, cnx = db
+	if not body["email"] or not body["password"]:
+		return {"error": True,"message": "請填打所有欄位"}
+	cursor.execute("SELECT * FROM user WHERE email = %s and password=%s",(body["email"],body["password"]))
+	account = cursor.fetchone()
+	if not account:
+		return {"error": True,"message": "Email 或密碼不正確"}
+	expire = datetime.utcnow() + timedelta(days=7)
+	encoded_jwt = jwt.encode({"id":account["id"] ,"name":account["name"] ,"email": body["email"],"password":body["password"],"exp":expire}, secret, algorithm)
+	return{"token":encoded_jwt}

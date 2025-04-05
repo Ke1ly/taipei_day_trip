@@ -6,6 +6,93 @@
   font-family: "Noto Sans TC", sans-serif;
 }
 body {
+  dialog.sign-in-popup,
+  dialog.sign-up-popup {
+    max-width: 340px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    div.gradient-bar {
+      display: block;
+      width: 100%;
+      height: 10px;
+      background-image: linear-gradient(60deg, #66aabb, #337788);
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+    }
+    img {
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      top: 27px;
+      right: 17px;
+      cursor: pointer;
+    }
+    div.sign-in,
+    div.sign-up {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
+      h4 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #666666;
+        margin: 15px 0px;
+      }
+      input,
+      button#sign-in-submit-btn,
+      button#sign-up-submit-btn {
+        width: 310px;
+        height: 46px;
+        margin: 0px 15px;
+        padding: 15px;
+        font-size: 16px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+      }
+      input {
+        margin-bottom: 10px;
+      }
+      button#sign-in-submit-btn,
+      button#sign-up-submit-btn {
+        background-color: #448899;
+        color: white;
+        font-size: 19px;
+        border: none;
+        cursor: pointer;
+        line-height: 23px;
+        margin-bottom: 15px;
+      }
+      p {
+        font-weight: 500;
+      }
+      button#to-sign-up,
+      button#to-sign-in {
+        border: none;
+        color: #666666;
+        background: none;
+        font-weight: 500;
+        margin-bottom: 15px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    }
+  }
+  dialog.sign-in-popup {
+    box-shadow: 0px 4px 60px #aaaaaa;
+  }
+  dialog.sign-in-popup::backdrop {
+    background: rgba(0, 0, 0, 0.25);
+  }
+  dialog.sign-up-popup::backdrop {
+    background: none;
+  }
   header {
     background-color: white;
     position: sticky;
@@ -43,7 +130,7 @@ body {
   }
   section#hero {
     background-image: url("/static/img/welcome.png");
-    background-size: 1920px;
+    background-size: cover;
     background-position: center top;
     max-width: 1920px;
     height: 320px;
@@ -107,6 +194,7 @@ body {
     align-items: center;
     justify-content: center;
     max-width: 1200px;
+    overflow: hidden;
     img {
       width: 24px;
       height: 24px;
@@ -114,16 +202,20 @@ body {
     }
     div {
       max-width: 1100px;
+      /* overflow-x: hidden; */
       overflow-x: scroll;
-      overflow-y: hidden;
+      /* overflow-y: hidden; */
       white-space: nowrap;
 
       margin: 10px;
-      &::-webkit-scrollbar {
+      /* &::-webkit-scrollbar {
         display: none;
-      } /* Hide scrollbar for Chrome, Safari and Opera */
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
+      }  */
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      /* -ms-overflow-style: none; */
+      /* IE and Edge */
+      /* scrollbar-width: none;  */
+      /* Firefox */
       scroll-behavior: smooth;
       button {
         cursor: pointer;
