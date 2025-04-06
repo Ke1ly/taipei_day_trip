@@ -148,5 +148,5 @@ async def sign_in(request: Request, db=Depends(get_db),body=Body(None)):
 	if not account:
 		return {"error": True,"message": "Email 或密碼不正確"}
 	expire = datetime.utcnow() + timedelta(days=7)
-	encoded_jwt = jwt.encode({"id":account["id"] ,"name":account["name"] ,"email": body["email"],"password":body["password"],"exp":expire}, secret, algorithm)
+	encoded_jwt = jwt.encode({"id":account["id"] ,"name":account["name"] ,"email": body["email"],"exp":expire}, secret, algorithm)
 	return{"token":encoded_jwt}
