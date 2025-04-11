@@ -27,8 +27,6 @@ const divMain = document.querySelector("main");
 const footer = document.querySelector("footer");
 
 let token = localStorage.getItem("token");
-let userName;
-let userEmail;
 
 renderBooking();
 
@@ -62,14 +60,13 @@ async function fetchAuth() {
         toBookingBtn.addEventListener("click", () => {
           location.reload();
         });
-        userName = data.data.name;
-        userEmail = data.data.email;
       } else {
         authBtn.textContent = "登入/註冊";
         authBtn.onclick = showPopUp;
         toBookingBtn.onclick = showPopUp;
         location.replace("/");
       }
+      return data;
     } else {
       authBtn.textContent = "登入/註冊";
       authBtn.onclick = showPopUp;
@@ -83,7 +80,9 @@ async function fetchAuth() {
 
 //render booking page
 async function renderBooking() {
-  fetchAuth();
+  let authData = await fetchAuth();
+  let userName = authData.data.name;
+  let userEmail = authData.data.email;
   let response = await fetch("/api/booking", {
     method: "GET",
     headers: {
