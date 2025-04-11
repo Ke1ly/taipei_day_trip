@@ -1,9 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking</title>
+    <title>預定行程・台北一日遊</title>
+    <link rel="stylesheet" href="/static/css/booking.css" />
+    <script src="/static/js/booking.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <dialog class="sign-in-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-in-popup"
+      />
+      <div class="sign-in">
+        <h4>登入會員帳號</h4>
+        <form id="sign-in-form">
+          <input type="email" placeholder="輸入電子信箱" id="sign-in-email" />
+          <input type="password" placeholder="輸入密碼" id="sign-in-pwd" />
+          <button type="button" id="sign-in-submit-btn">登入帳戶</button>
+        </form>
+        <p id="sign-in-response"></p>
+        <button type="button" id="to-sign-up">還沒有帳戶？點此註冊</button>
+      </div>
+    </dialog>
+    <dialog class="sign-up-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-up-popup"
+      />
+      <div class="sign-up">
+        <h4>註冊會員帳號</h4>
+        <form id="sign-up-form">
+          <input type="text" placeholder="輸入姓名" id="sign-up-name" />
+          <input type="email" placeholder="輸入電子信箱" id="sign-up-email" />
+          <input type="password" placeholder="輸入密碼" id="sign-up-pwd" />
+          <button type="button" id="sign-up-submit-btn">註冊新帳戶</button>
+        </form>
+        <p id="sign-up-response"></p>
+        <button type="button" id="to-sign-in">已經有帳戶了？點此登入</button>
+      </div>
+    </dialog>
+    <header>
+      <div class="header">
+        <div class="header-left">
+          <a href="/">
+            <h1>台北一日遊</h1>
+          </a>
+        </div>
+        <div class="header-right">
+          <a href="#" id="booking-btn">預定行程</a>
+          <a href="#" class="sign-in-or-sign-up"></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="hello">
+      <span>您好，</span> <span id="user-name"></span>
+      <span>，待預訂的行程如下：</span>
+    </div>
+    <main>
+      <section id="booked-attrction">
+        <div class="attraction-imformation">
+          <img alt="booked-attraction-img" id="booking-img" />
+          <div>
+            <p class="attraction-name">
+              台北一日遊：<span id="booked-attraction-name"></span>
+            </p>
+            <p>日期：<span id="booking-date"></span></p>
+            <p>時間：<span id="booking-time"></span></p>
+            <p>
+              費用：<span>新台幣 <span id="booking-price"></span> 元</span>
+            </p>
+            <p>地點：<span id="booking-address"></span></p>
+          </div>
+        </div>
+        <img
+          src="/static/img/icon_delete.png"
+          alt="delete-icon"
+          id="delete-icon"
+        />
+      </section>
+      <hr />
+      <section id="contact-information">
+        <h3>您的聯絡資訊</h3>
+        <form>
+          <label
+            >聯絡姓名：<input type="text" id="contact-name" required
+          /></label>
+          <label
+            >聯絡信箱：<input type="email" id="contact-email" required
+          /></label>
+          <label>手機號碼：<input type="text" required /></label>
+        </form>
+        <p>
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+        </p>
+      </section>
+      <hr />
+      <section id="payment-information">
+        <h3>信用卡付款資訊</h3>
+        <form>
+          <label
+            >卡片號碼：<input
+              type="text"
+              placeholder="**** **** **** ****"
+              pattern="[0-9]{12,19}"
+              required
+          /></label>
+
+          <label
+            >過期時間：<input
+              type="text"
+              placeholder="MM/YY"
+              pattern="[0-1][0-9]-[0-9][0-9]"
+              required
+          /></label>
+
+          <label
+            >驗證密碼：<input
+              type="text"
+              placeholder="CVV"
+              pattern="[0-9]{3,4}"
+              required
+          /></label>
+        </form>
+      </section>
+      <hr />
+      <section id="confirm">
+        <p>總價：新台幣 <span id="total-price"></span> 元</p>
+        <button>確認訂購並付款</button>
+      </section>
+    </main>
+    <footer>
+      <div>
+        <p>COPYRIGHT © 2021 台北一日遊</p>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -130,7 +130,7 @@ async def sign_up(request: Request, db=Depends(get_db),body=Body(None) ):
 	return {"ok": True}
 
 @app.get("/api/user/auth")
-async def auth(request: Request,credentials: HTTPAuthorizationCredentials = Security(HTTPBearer())):
+async def verify_jwt_token(request: Request,credentials: HTTPAuthorizationCredentials = Security(HTTPBearer())):
 	token = credentials.credentials
 	try:
 		payload = jwt.decode(token, secret ,algorithms=["HS256"])
@@ -150,3 +150,38 @@ async def sign_in(request: Request, db=Depends(get_db),body=Body(None)):
 	expire = datetime.utcnow() + timedelta(days=7)
 	encoded_jwt = jwt.encode({"id":account["id"] ,"name":account["name"] ,"email": body["email"],"exp":expire}, secret, algorithm)
 	return{"token":encoded_jwt}
+
+@app.get("/api/booking")
+async def get_booking(request: Request, db=Depends(get_db), payload: dict = Depends(verify_jwt_token)):
+		cursor, cnx = db
+		cursor.execute("SELECT * FROM booking INNER JOIN attraction ON booking.attraction_id=attraction.id WHERE booking.user_id =%s ORDER BY booking_time DESC LIMIT 1",(payload["data"]["id"],))
+		latestBooking = cursor.fetchone()
+		if latestBooking:
+			cursor.execute("SELECT img_url FROM img JOIN attraction ON attraction.id = img.attraction_id WHERE attraction.id = %s LIMIT 1",(latestBooking["id"],))
+			firstImg = cursor.fetchone()
+			return{"data":{"attraction":{"id":latestBooking["id"],"name":latestBooking["name"],"address":latestBooking["address"],"image":firstImg["img_url"]},"date":latestBooking["date"],"time":latestBooking["time_slot"],"price":latestBooking["price"]}}
+		else:
+			return{"data":None}
+
+@app.post("/api/booking")
+async def create_new_booking(request: Request, db=Depends(get_db),body=Body(None),payload: dict = Depends(verify_jwt_token)):
+	cursor, cnx = db
+	if not body["date"] or not body["time"]:
+		return {"error": True,"message": "請選擇預定時間與日期"}
+	query="INSERT INTO booking(attraction_id, user_id, date, time_slot, price)VALUES (%s, %s, %s, %s, %s)ON DUPLICATE KEY UPDATE attraction_id = VALUES(attraction_id),date = VALUES(date),time_slot = VALUES(time_slot),price = VALUES(price)"
+	values = (
+    body["attractionId"],
+    payload["data"]["id"],
+    body["date"],
+    body["time"],
+    body["price"])
+	cursor.execute(query,values)
+	cnx.commit()
+	return {"ok":True}
+
+@app.delete("/api/booking")
+async def delete_booking(request: Request, db=Depends(get_db),payload: dict = Depends(verify_jwt_token)):
+	cursor, cnx = db
+	cursor.execute("DELETE FROM booking WHERE user_id = %s",(payload["data"]["id"],))
+	cnx.commit()
+	return {"ok":True}
