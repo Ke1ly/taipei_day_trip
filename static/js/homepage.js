@@ -19,6 +19,7 @@ const signInSubmitBtn = document.getElementById("sign-in-submit-btn");
 const signUpSubmitBtn = document.getElementById("sign-up-submit-btn");
 const signUpResponse = document.getElementById("sign-up-response");
 const signInResponse = document.getElementById("sign-in-response");
+const toBookingBtn = document.getElementById("booking-btn");
 
 let keyword = null;
 let nextPage;
@@ -298,13 +299,18 @@ async function fetchAuth() {
       if (data.data !== null) {
         authBtn.textContent = "登出系統";
         authBtn.onclick = signOut;
+        toBookingBtn.addEventListener("click", () => {
+          location.replace("/booking");
+        });
       } else {
         authBtn.textContent = "登入/註冊";
         authBtn.onclick = showPopUp;
+        toBookingBtn.onclick = showPopUp;
       }
     } else {
       authBtn.textContent = "登入/註冊";
       authBtn.onclick = showPopUp;
+      toBookingBtn.onclick = showPopUp;
     }
   } catch (error) {
     console.error("Error:", error);

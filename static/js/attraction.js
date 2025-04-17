@@ -23,6 +23,8 @@ const signInSubmitBtn = document.getElementById("sign-in-submit-btn");
 const signUpSubmitBtn = document.getElementById("sign-up-submit-btn");
 const signUpResponse = document.getElementById("sign-up-response");
 const signInResponse = document.getElementById("sign-in-response");
+const bookingSubmitBtn = document.getElementById("booking-submit-btn");
+const toBookingBtn = document.getElementById("booking-btn");
 let attractionData;
 let slides = [];
 let indicators = [];
@@ -219,15 +221,65 @@ async function fetchAuth() {
       if (data.data !== null) {
         authBtn.textContent = "登出系統";
         authBtn.onclick = signOut;
+        bookingSubmitBtn.onclick = CreateBooking;
+        toBookingBtn.addEventListener("click", () => {
+          location.replace("/booking");
+        });
       } else {
         authBtn.textContent = "登入/註冊";
         authBtn.onclick = showPopUp;
+        bookingSubmitBtn.onclick = showPopUp;
+        toBookingBtn.onclick = showPopUp;
       }
     } else {
       authBtn.textContent = "登入/註冊";
       authBtn.onclick = showPopUp;
+      bookingSubmitBtn.onclick = showPopUp;
+      toBookingBtn.onclick = showPopUp;
     }
   } catch (error) {
     console.error("Error:", error);
+  }
+}
+
+let bookingDate;
+let bookingTime;
+let bookingPrice;
+
+//create new booking
+async function CreateBooking() {
+  bookingDate = document.getElementById("booking-date");
+  bookingTime = document.querySelector('input[name="time-slot"]:checked');
+  if (!bookingDate || !bookingTime) {
+    alert("請選擇預定時間與日期");
+  } else {
+    if (bookingTime == "下半天") {
+      bookingPrice = 2500;
+    } else {
+      bookingPrice = 2000;
+    }
+    let response = await fetch("/api/booking", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        attractionId: attractionId,
+        date: bookingDate.value,
+        time: bookingTime.value,
+        price: bookingPrice,
+      }),
+    });
+    if (!response.ok) {
+      let errorData = await response.json();
+      throw new Error(errorData.message || "註冊時發生錯誤");
+    }
+    response = await response.json();
+    if (response.error) {
+      alert(response.message);
+    } else {
+      location.replace("/booking");
+    }
   }
 }
