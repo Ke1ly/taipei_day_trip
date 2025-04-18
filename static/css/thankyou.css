@@ -1,0 +1,161 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-family: "Noto Sans TC", sans-serif;
+}
+body {
+  dialog.sign-in-popup,
+  dialog.sign-up-popup {
+    max-width: 340px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    div.gradient-bar {
+      display: block;
+      width: 100%;
+      height: 10px;
+      background-image: linear-gradient(60deg, #66aabb, #337788);
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+    }
+    img {
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      top: 27px;
+      right: 17px;
+      cursor: pointer;
+    }
+    div.sign-in,
+    div.sign-up {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
+      h4 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #666666;
+        margin: 15px 0px;
+      }
+      input,
+      button#sign-in-submit-btn,
+      button#sign-up-submit-btn {
+        width: 310px;
+        height: 46px;
+        margin: 0px 15px;
+        padding: 15px;
+        font-size: 16px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+      }
+      input {
+        margin-bottom: 10px;
+      }
+      button#sign-in-submit-btn,
+      button#sign-up-submit-btn {
+        background-color: #448899;
+        color: white;
+        font-size: 19px;
+        border: none;
+        cursor: pointer;
+        line-height: 23px;
+        margin-bottom: 15px;
+      }
+      p {
+        font-weight: 500;
+      }
+      button#to-sign-up,
+      button#to-sign-in {
+        border: none;
+        color: #666666;
+        background: none;
+        font-weight: 500;
+        margin-bottom: 15px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    }
+  }
+  dialog.sign-in-popup {
+    box-shadow: 0px 4px 60px #aaaaaa;
+  }
+  dialog.sign-in-popup::backdrop {
+    background: rgba(0, 0, 0, 0.25);
+  }
+  dialog.sign-up-popup::backdrop {
+    background: none;
+  }
+  header {
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    div.header {
+      display: grid;
+      grid-template-columns: minmax(0, 600px) minmax(0, 600px);
+      justify-self: center;
+    }
+    div.header-left {
+      justify-self: start;
+      align-self: center;
+      margin: 10px 10px;
+      a {
+        text-decoration: none;
+        h1 {
+          font-size: 30px;
+          font-weight: 700;
+          color: #448899;
+        }
+      }
+    }
+    div.header-right {
+      justify-self: end;
+      align-self: center;
+      margin: 10px 10px;
+      a {
+        text-decoration: none;
+        color: #666666;
+        font-size: 15px;
+        font-weight: 450;
+        padding-left: 0.5rem;
+      }
+    }
+  }
+  main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0px 10px;
+    color: #757575;
+    p {
+      font-weight: 700;
+      line-height: 32px;
+      span {
+        margin: 0px 5px;
+        color: green;
+      }
+    }
+  }
+  footer {
+    background-color: #757575;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    div {
+      height: 100px;
+      p {
+        margin-top: 40px;
+        color: white;
+        font-size: 14px;
+      }
+    }
+  }
+}

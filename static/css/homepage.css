@@ -289,6 +289,9 @@ body {
       }
     }
   }
+  div#observer-target {
+    height: 1px;
+  }
   footer {
     background-color: #757575;
     height: 100px;

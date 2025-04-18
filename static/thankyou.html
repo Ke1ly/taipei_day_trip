@@ -1,11 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You</title>
+    <link rel="stylesheet" href="/static/css/thankyou.css" />
+    <script
+      type="module"
+      src="/static/js/controller/thankyou.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <dialog class="sign-in-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-in-popup"
+      />
+      <div class="sign-in">
+        <h4>登入會員帳號</h4>
+        <form id="sign-in-form">
+          <input type="email" placeholder="輸入電子信箱" id="sign-in-email" />
+          <input type="password" placeholder="輸入密碼" id="sign-in-pwd" />
+          <button type="button" id="sign-in-submit-btn">登入帳戶</button>
+        </form>
+        <p id="sign-in-response"></p>
+        <button type="button" id="to-sign-up">還沒有帳戶？點此註冊</button>
+      </div>
+    </dialog>
+    <dialog class="sign-up-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-up-popup"
+      />
+      <div class="sign-up">
+        <h4>註冊會員帳號</h4>
+        <form id="sign-up-form">
+          <input type="text" placeholder="輸入姓名" id="sign-up-name" />
+          <input type="email" placeholder="輸入電子信箱" id="sign-up-email" />
+          <input type="password" placeholder="輸入密碼" id="sign-up-pwd" />
+          <button type="button" id="sign-up-submit-btn">註冊新帳戶</button>
+        </form>
+        <p id="sign-up-response"></p>
+        <button type="button" id="to-sign-in">已經有帳戶了？點此登入</button>
+      </div>
+    </dialog>
+    <header>
+      <div class="header">
+        <div class="header-left">
+          <a href="/">
+            <h1>台北一日遊</h1>
+          </a>
+        </div>
+        <div class="header-right">
+          <a href="#" id="booking-btn">預定行程</a>
+          <a href="#" class="sign-in-or-sign-up"></a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <p>訂購成功！</p>
+      <p>訂單編號：<span id="order-number"></span></p>
+      <p>付款狀態：<span id="payment-status"></span></p>
+    </main>
+    <footer>
+      <div>
+        <p>COPYRIGHT © 2021 台北一日遊</p>
+      </div>
+    </footer>
+  </body>
 </html>

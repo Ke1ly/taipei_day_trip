@@ -6,9 +6,8 @@ from fastapi.staticfiles import StaticFiles
 import jwt
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-secret = os.getenv("JWT_SECRET_KEY")
-algorithm = os.getenv("ALGORITHM")
+import tappay
+import uuid
 
 app=FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -131,6 +130,7 @@ async def sign_up(request: Request, db=Depends(get_db),body=Body(None) ):
 
 @app.get("/api/user/auth")
 async def verify_jwt_token(request: Request,credentials: HTTPAuthorizationCredentials = Security(HTTPBearer())):
+	secret = os.getenv("JWT_SECRET_KEY")
 	token = credentials.credentials
 	try:
 		payload = jwt.decode(token, secret ,algorithms=["HS256"])
@@ -140,6 +140,8 @@ async def verify_jwt_token(request: Request,credentials: HTTPAuthorizationCreden
 
 @app.put("/api/user/auth")
 async def sign_in(request: Request, db=Depends(get_db),body=Body(None)):
+	secret = os.getenv("JWT_SECRET_KEY")
+	algorithm = os.getenv("ALGORITHM")
 	cursor, cnx = db
 	if not body["email"] or not body["password"]:
 		return {"error": True,"message": "請填打所有欄位"}
@@ -185,3 +187,61 @@ async def delete_booking(request: Request, db=Depends(get_db),payload: dict = De
 	cursor.execute("DELETE FROM booking WHERE user_id = %s",(payload["data"]["id"],))
 	cnx.commit()
 	return {"ok":True}
+
+@app.post("/api/orders")
+async def create_order(request: Request, db=Depends(get_db),payload: dict = Depends(verify_jwt_token),body=Body(None)):
+	cursor, cnx = db
+	date_str = datetime.utcnow().strftime("%Y%m%d")
+	suffix = uuid.uuid4().hex[:8].upper()
+	order_number= f"{date_str}{suffix}"
+	query="INSERT INTO orders(attraction_id, date, price, time_slot, user_id, contact_name, contact_email, contact_phone, order_number)VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+	values = (body["order"]["trip"]["attraction"]["id"], body["order"]["trip"]["date"], body["order"]["price"], body["order"]["trip"]["time"], payload["data"]["id"], body["order"]["contact"]["name"], body["order"]["contact"]["email"], body["order"]["contact"]["phone"],order_number)
+	cursor.execute(query,values)
+	cnx.commit()
+
+	partner_key=os.getenv("TP_PARTNER_KEY")
+	merchant_id=os.getenv("TP_MERCHANT_ID")
+	client = tappay.Client(True, partner_key, merchant_id)
+	card_holder_data = tappay.Models.CardHolderData(body["order"]["contact"]["phone"], body["order"]["contact"]["name"], body["order"]["contact"]["email"])
+	response_data_dict = client.pay_by_prime(body["prime"], body["order"]["price"], "payment_details", card_holder_data)
+	if response_data_dict["status"]==0:
+		cursor.execute("UPDATE orders SET status =%s WHERE order_number=%s",("PAID",order_number,))
+		cnx.commit()
+	return {"data":{"number":order_number,"payment":{"status":response_data_dict["status"],"message":response_data_dict["msg"]}}}
+
+@app.get("/api/order/{orderNumber}")
+async def get_order(request: Request, orderNumber:str, payload: dict = Depends(verify_jwt_token), db=Depends(get_db)):
+	cursor, cnx = db
+	cursor.execute("SELECT * FROM orders LEFT JOIN attraction ON orders.attraction_id=attraction.id WHERE orders.order_number=%s",(orderNumber,))
+	order = cursor.fetchone()
+	if order:
+		if order["status"]=="PAID":
+			status=1
+		else:
+			status=0
+		cursor.execute("SELECT img_url FROM img JOIN attraction ON attraction.id = img.attraction_id WHERE attraction.id = %s LIMIT 1",(order["attraction_id"],))
+		firstImg = cursor.fetchone()
+		return {
+			"data":{
+				"number":order["order_number"],
+				"price":order["price"],
+				"trip":{
+					"attraction":{
+						"id":order["attraction_id"],
+						"name":order["name"],
+						"address":order["address"],
+						"image":firstImg["img_url"]
+					},
+					"date":order["date"],
+					"time":order["time_slot"],
+				},
+				"contact":{
+					"name":order["contact_name"],
+					"email":order["contact_email"],
+					"phone":order["contact_phone"],
+				},
+				"status":status,
+			}
+		}
+	else:
+		return {"error":True,"message":"查無訂單"}
