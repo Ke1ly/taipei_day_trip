@@ -137,21 +137,25 @@ payBtn.addEventListener("click", async () => {
   if (!phone.value || !email.value || !name.value) {
     alert("請填寫所有聯絡資訊");
   } else {
-    const prime = await getPrime();
-    let bookingData = await getBooking(token);
-    delete bookingData.data.price;
-    let addOrderData = await addOrder(
-      token,
-      prime,
-      bookingData,
-      name,
-      email,
-      phone
-    );
-    alert(addOrderData.data.payment.message);
-    deleteBooking(token);
-    let order_number = addOrderData.data.number;
-    location.replace(`/thankyou?number=${order_number}`);
+    try {
+      const prime = await getPrime();
+      let bookingData = await getBooking(token);
+      delete bookingData.data.price;
+      let addOrderData = await addOrder(
+        token,
+        prime,
+        bookingData,
+        name,
+        email,
+        phone
+      );
+      alert(addOrderData.data.payment.message);
+      deleteBooking(token);
+      let order_number = addOrderData.data.number;
+      location.replace(`/thankyou?number=${order_number}`);
+    } catch (error) {
+      alert(error.error, error.msg);
+    }
   }
 });
 
