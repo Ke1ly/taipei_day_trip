@@ -197,8 +197,7 @@ body {
         cursor: pointer;
       }
     }
-    section#contact-information,
-    section#payment-information {
+    section#contact-information {
       max-width: 1000px;
       margin: 0px auto;
       padding: 0px 10px;
@@ -226,6 +225,39 @@ body {
         color: #666666;
         font-weight: 700;
         line-height: 22px;
+      }
+    }
+
+    section#payment-information {
+      max-width: 1000px;
+      margin: 0px auto;
+      padding: 0px 10px;
+      h3 {
+        color: #666666;
+        font-size: 19px;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        div.card-form {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-bottom: 15px;
+          label {
+            color: #666666;
+          }
+          div.border {
+            border: 1px solid #e8e8e8;
+            div.tpfield {
+              height: 38px;
+              width: 200px;
+              padding: 10px;
+            }
+          }
+        }
       }
     }
     hr {
@@ -259,7 +291,7 @@ body {
         border-radius: 5px;
         width: 173px;
         height: 36px;
-        background-color: #448899;
+        background-color: grey;
         color: white;
         font-size: 19px;
         font-weight: 400;

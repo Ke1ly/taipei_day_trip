@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>預定行程・台北一日遊</title>
     <link rel="stylesheet" href="/static/css/booking.css" />
-    <script src="/static/js/booking.js" defer></script>
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script type="module" src="/static/js/controller/booking.js" defer></script>
   </head>
   <body>
     <dialog class="sign-in-popup">
@@ -95,7 +96,7 @@
           <label
             >聯絡信箱：<input type="email" id="contact-email" required
           /></label>
-          <label>手機號碼：<input type="text" required /></label>
+          <label>手機號碼：<input type="text" id="contact-phone" /></label>
         </form>
         <p>
           請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
@@ -104,7 +105,7 @@
       <hr />
       <section id="payment-information">
         <h3>信用卡付款資訊</h3>
-        <form>
+        <!-- <form>
           <label
             >卡片號碼：<input
               type="text"
@@ -128,12 +129,30 @@
               pattern="[0-9]{3,4}"
               required
           /></label>
+        </form> -->
+        <form>
+          <div class="card-form">
+            <label for="card-number">卡片號碼：</label>
+            <div class="border">
+              <div class="tpfield" id="card-number"></div>
+            </div>
+          </div>
+          <div class="card-form">
+            <label for="card-expiration-date">過期時間：</label>
+            <div class="border">
+              <div class="tpfield" id="card-expiration-date"></div>
+            </div>
+          </div>
+          <div class="card-form">
+            <label for="ccv">驗證密碼：</label>
+            <div class="border"><div class="tpfield" id="card-ccv"></div></div>
+          </div>
         </form>
       </section>
       <hr />
       <section id="confirm">
         <p>總價：新台幣 <span id="total-price"></span> 元</p>
-        <button>確認訂購並付款</button>
+        <button id="order-n-pay">確認訂購並付款</button>
       </section>
     </main>
     <footer>
