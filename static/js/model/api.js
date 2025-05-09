@@ -1,8 +1,5 @@
 // [all] 寫入註冊資料
-export async function signUp() {
-  const name = document.getElementById("sign-up-name");
-  const email = document.getElementById("sign-up-email");
-  const password = document.getElementById("sign-up-pwd");
+export async function signUp(name, email, password) {
   let response = await fetch("/api/user", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -20,11 +17,30 @@ export async function signUp() {
   let signUpData = await response.json();
   return signUpData;
 }
+// [all] 更新使用者資料
+export async function updateUserData(name = None, email = None, token) {
+  let response = await fetch("/api/user", {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+    }),
+  });
+
+  if (!response.ok) {
+    let errorData = await response.json();
+    throw new Error(errorData.message || "更新資料時發生錯誤");
+  }
+  let UpdateResultData = await response.json();
+  return UpdateResultData;
+}
 
 // [all] 更新登入狀態
-export async function signIn() {
-  const email = document.getElementById("sign-in-email");
-  const password = document.getElementById("sign-in-pwd");
+export async function signIn(email, password) {
   let response = await fetch("/api/user/auth", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -209,4 +225,19 @@ export async function GetOrderDataByNumber(token, number) {
   }
   let orderData = await response.json();
   return orderData;
+}
+
+export async function getOrdersById(token) {
+  const response = await fetch("/api/orders", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(errorData.message || "驗證身份時發生錯誤");
+  }
+  let ordersData = await response.json();
+  return ordersData;
 }

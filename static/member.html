@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Member Center</title>
+    <link rel="stylesheet" href="/static/css/member.css" />
+    <script type="module" src="/static/js/controller/member.js"></script>
+  </head>
+  <body>
+    <dialog class="sign-in-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-in-popup"
+      />
+      <div class="sign-in">
+        <h4>登入會員帳號</h4>
+        <form id="sign-in-form">
+          <input type="email" placeholder="輸入電子信箱" id="sign-in-email" />
+          <input type="password" placeholder="輸入密碼" id="sign-in-pwd" />
+          <button type="button" id="sign-in-submit-btn">登入帳戶</button>
+        </form>
+        <p id="sign-in-response"></p>
+        <button type="button" id="to-sign-up">還沒有帳戶？點此註冊</button>
+      </div>
+    </dialog>
+    <dialog class="sign-up-popup">
+      <div class="gradient-bar"></div>
+      <img
+        src="/static/img/icon_close.png"
+        alt="關閉"
+        id="close-sign-up-popup"
+      />
+      <div class="sign-up">
+        <h4>註冊會員帳號</h4>
+        <form id="sign-up-form">
+          <input type="text" placeholder="輸入姓名" id="sign-up-name" />
+          <input type="email" placeholder="輸入電子信箱" id="sign-up-email" />
+          <input
+            type="password"
+            placeholder="建立長度 6-12 的密碼"
+            id="sign-up-pwd"
+          />
+          <button type="button" id="sign-up-submit-btn">註冊新帳戶</button>
+        </form>
+        <p id="sign-up-response"></p>
+        <button type="button" id="to-sign-in">已經有帳戶了？點此登入</button>
+      </div>
+    </dialog>
+    <header>
+      <div class="header">
+        <div class="header-left">
+          <a href="/">
+            <h1>台北一日遊</h1>
+          </a>
+        </div>
+        <div class="header-right">
+          <a href="#" id="booking-btn"><div>預定行程</div></a>
+          <a href="#"> <div class="sign-in-or-sign-up"></div></a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <aside>
+        <section class="side-bar">
+          <button id="profile-btn">編輯個人檔案</button>
+          <!-- <button id="fav-booking-btn">收藏景點</button> -->
+          <button id="order-btn">歷史訂單</button>
+          <button id="sign-out-btn">登出</button>
+        </section>
+      </aside>
+      <section class="main profile" id="profile-section">
+        <h3>編輯個人檔案</h3>
+        <!-- <h5>相片</h5>
+        <img src="/static/img/circle-user-solid.svg" alt="" id="preview" />
+        <input type="file" id="image-upload" />
+        <label type="button" for="image-upload" class="image-upload-btn">
+          選擇檔案
+        </label>
+        <button id="image-commit-btn">上傳</button> -->
+        <h5>帳號 / Email</h5>
+        <input type="email" id="update-email" />
+        <button id="update-email-btn">更改</button>
+        <h5>姓名</h5>
+        <input type="email" id="update-name" />
+        <button id="update-name-btn">更改</button>
+        <!-- <h5>密碼</h5>
+        <p><span id="current-name"></span></p> -->
+      </section>
+      <!-- <section class="main booking"></section> -->
+      <section class="main order" id="order-section">
+        <h3>歷史訂單</h3>
+        <h5>點選「訂單編號」查看訂單細節</h5>
+        <table id="order-table">
+          <tr>
+            <td>訂單編號</td>
+            <td>訂單時間</td>
+            <td>訂單金額</td>
+          </tr>
+        </table>
+        <section id="order-attraction">
+          <img alt="order-attraction-img" id="order-img" />
+          <div>
+            <p id="order-attraction-name"></p>
+            <p>日期：<span id="order-date"></span></p>
+            <p>時間：<span id="order-time"></span></p>
+            <p>地點：<span id="order-address"></span></p>
+            <p>付款狀態：<span id="order-payment"></span></p>
+            <button id="pay-again">重新付款</button>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer>
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </footer>
+    <template id="order-template">
+      <tr>
+        <td class="order-number"></td>
+        <td class="order-time"></td>
+        <td class="order-price"></td>
+      </tr>
+    </template>
+  </body>
+</html>

@@ -1,6 +1,8 @@
 import json
 import mysql.connector
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # 抓取所有景點資料，放入變數 attractions_data
 src="data/taipei-attractions.json"
@@ -18,7 +20,7 @@ conn = mysql.connector.connect(
     host=os.getenv("MYSQL_HOST"),
     user=os.getenv("MYSQL_USER"),
     password=os.getenv("MYSQL_PASSWORD"),
-    database=os.getenv("MYSQL_DATABASE_02")
+    database=os.getenv("MYSQL_DATABASE")
 )
 cursor = conn.cursor(dictionary=True)
 

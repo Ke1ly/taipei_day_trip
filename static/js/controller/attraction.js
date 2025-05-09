@@ -1,45 +1,43 @@
-import {
-  GetAttractionDataById,
-  signUp,
-  fetchAuth,
-  signIn,
-  addBooking,
-} from "../model/api.js";
+import { GetAttractionDataById, fetchAuth, addBooking } from "../model/api.js";
 import {
   RenderAttractionInfo,
+  preloadImages,
   RenderAttractionImg,
-  renderAuth,
   renderInit,
-  renderSignMessage,
 } from "../view/render.js";
-
-const signUpResponse = document.getElementById("sign-up-response");
-const signInResponse = document.getElementById("sign-in-response");
-
+import {
+  initSignUpDialog,
+  initSignInDialog,
+  initAuthPopup,
+  handleAuth,
+} from "../controller/common.js";
 // get attractionId from the URL
 const pathParts = window.location.pathname.split("/");
 let attractionId = pathParts[pathParts.length - 1];
 
+initSignUpDialog();
+initSignInDialog();
+initAuthPopup();
+
 // render the attraction
 let attractionData = await GetAttractionDataById(attractionId);
+const imageUrlList = attractionData["data"]["images"];
+let images = preloadImages(imageUrlList);
+
 RenderAttractionInfo(attractionData);
-let imgData = RenderAttractionImg(attractionData);
+let imgData = RenderAttractionImg(images);
 
 // render according to auth status
 let token = localStorage.getItem("token");
 const bookingSubmitBtn = document.getElementById("booking-submit-btn");
-if (token !== null) {
-  let authData = await fetchAuth(token);
-
-  if (authData.data !== null) {
-    renderAuth();
+handleAuth(token, {
+  onSuccess: () => {
     bookingSubmitBtn.onclick = CreateBooking;
-  } else {
+  },
+  onFailure: () => {
     renderInit([bookingSubmitBtn]);
-  }
-} else {
-  renderInit([bookingSubmitBtn]);
-}
+  },
+});
 
 // show price based on the selected time slot
 const timeSlotForm = document.getElementById("time-slot");
@@ -77,70 +75,23 @@ function changeSlide(direction, slides, indicators) {
   }
 }
 
-//sign up submit
-const signUpSubmitBtn = document.getElementById("sign-up-submit-btn");
-signUpSubmitBtn.addEventListener("click", async () => {
-  let signUpData = await signUp();
-  if (signUpData.error) {
-    renderSignMessage(signUpResponse, signUpData.message, "red");
-  } else {
-    renderSignMessage(signUpResponse, "註冊成功，請登入系統", "green");
-  }
-});
-
-//sign in submit
-const signInSubmitBtn = document.getElementById("sign-in-submit-btn");
-signInSubmitBtn.addEventListener("click", async () => {
-  let signInData = await signIn();
-  if (signInData.error) {
-    renderSignMessage(signInResponse, signInData.message, "red");
-  } else {
-    signInResponse.replaceChildren();
-    localStorage.setItem("token", signInData.token);
-    location.reload();
-  }
-});
-
-// pop-up dialog controller
-const signUpDialog = document.querySelector(".sign-up-popup");
-const signInDialog = document.querySelector(".sign-in-popup");
-
-const closeSignInBtn = document.getElementById("close-sign-in-popup");
-closeSignInBtn.addEventListener("click", () => {
-  signInDialog.close();
-});
-
-const toSignUpBtn = document.getElementById("to-sign-up");
-toSignUpBtn.addEventListener("click", () => {
-  const signUpForm = document.getElementById("sign-up-form");
-  if (signUpForm) {
-    signUpForm.reset();
-  }
-  signUpResponse.replaceChildren();
-  signUpDialog.showModal();
-});
-
-const closeSignUpBtn = document.getElementById("close-sign-up-popup");
-closeSignUpBtn.addEventListener("click", () => {
-  signInDialog.close();
-  signUpDialog.close();
-});
-
-const toSignInBtn = document.getElementById("to-sign-in");
-toSignInBtn.addEventListener("click", () => {
-  const signInForm = document.getElementById("sign-in-form");
-  signInForm.reset();
-  signInResponse.replaceChildren();
-  signUpDialog.close();
-});
+function checkDate(bookingDate) {
+  const today = new Date();
+  const inputDate = new Date(bookingDate.value);
+  return inputDate >= today;
+}
 
 //create new booking
 async function CreateBooking() {
   const bookingDate = document.getElementById("booking-date");
   const bookingTime = document.querySelector('input[name="time-slot"]:checked');
   let bookingPrice;
-  if (!bookingDate || !bookingTime) {
+  if (!bookingDate.value || !bookingTime) {
     alert("請選擇預定時間與日期");
+  } else if (!validator.isDate(bookingDate.value)) {
+    alert("無此日期");
+  } else if (!checkDate(bookingDate)) {
+    alert("請選取今天以後的日期");
   } else {
     if (bookingTime.value == "下半天") {
       bookingPrice = 2500;

@@ -1,7 +1,4 @@
 import {
-  signUp,
-  fetchAuth,
-  signIn,
   getMRT,
   getAttractions,
   getAttractionsBySearch,
@@ -9,34 +6,36 @@ import {
 import {
   renderAuth,
   renderInit,
-  renderSignMessage,
   renderMRT,
   renderAttractions,
 } from "../view/render.js";
+import {
+  initSignUpDialog,
+  initSignInDialog,
+  initAuthPopup,
+  handleAuth,
+} from "../controller/common.js";
 
-const signUpResponse = document.getElementById("sign-up-response");
-const signInResponse = document.getElementById("sign-in-response");
 let nextPage;
+
+initSignUpDialog();
+initSignInDialog();
+initAuthPopup();
 
 // render according to auth status
 let token = localStorage.getItem("token");
-if (token !== null) {
-  let authData = await fetchAuth(token);
-  if (authData.data !== null) {
-    renderAuth();
-  } else {
+handleAuth(token, {
+  onFailure: () => {
     renderInit([]);
-  }
-} else {
-  renderInit([]);
-}
+  },
+});
 
 // render attractions
 async function showAttractions(page) {
   let keyword = document.getElementById("keyword").value;
   let attractionsData;
   const attractionSection = document.getElementById("attraction-section");
-  if (keyword == null) {
+  if (!keyword) {
     attractionsData = await getAttractions(page);
   } else {
     if (page == 0) {
@@ -44,8 +43,10 @@ async function showAttractions(page) {
     }
     attractionsData = await getAttractionsBySearch(page);
   }
-  renderAttractions(attractionsData);
-  nextPage = attractionsData["nextPage"];
+  if (attractionsData) {
+    renderAttractions(attractionsData);
+    nextPage = attractionsData["nextPage"];
+  }
 }
 showAttractions(0);
 
@@ -98,61 +99,4 @@ rightArrow.addEventListener("mouseover", function () {
 });
 rightArrow.addEventListener("mouseout", function () {
   this.src = "/static/img/right-arrow.png";
-});
-
-//sign up submit
-const signUpSubmitBtn = document.getElementById("sign-up-submit-btn");
-signUpSubmitBtn.addEventListener("click", async () => {
-  let signUpData = await signUp();
-  if (signUpData.error) {
-    renderSignMessage(signUpResponse, signUpData.message, "red");
-  } else {
-    renderSignMessage(signUpResponse, "註冊成功，請登入系統", "green");
-  }
-});
-
-//sign in submit
-const signInSubmitBtn = document.getElementById("sign-in-submit-btn");
-signInSubmitBtn.addEventListener("click", async () => {
-  let signInData = await signIn();
-  if (signInData.error) {
-    renderSignMessage(signInResponse, signInData.message, "red");
-  } else {
-    signInResponse.replaceChildren();
-    localStorage.setItem("token", signInData.token);
-    location.reload();
-  }
-});
-
-// pop-up dialog control
-const signUpDialog = document.querySelector(".sign-up-popup");
-const signInDialog = document.querySelector(".sign-in-popup");
-
-const closeSignInBtn = document.getElementById("close-sign-in-popup");
-closeSignInBtn.addEventListener("click", () => {
-  signInDialog.close();
-});
-
-const toSignUpBtn = document.getElementById("to-sign-up");
-toSignUpBtn.addEventListener("click", () => {
-  const signUpForm = document.getElementById("sign-up-form");
-  if (signUpForm) {
-    signUpForm.reset();
-  }
-  signUpResponse.replaceChildren();
-  signUpDialog.showModal();
-});
-
-const closeSignUpBtn = document.getElementById("close-sign-up-popup");
-closeSignUpBtn.addEventListener("click", () => {
-  signInDialog.close();
-  signUpDialog.close();
-});
-
-const toSignInBtn = document.getElementById("to-sign-in");
-toSignInBtn.addEventListener("click", () => {
-  const signInForm = document.getElementById("sign-in-form");
-  signInForm.reset();
-  signInResponse.replaceChildren();
-  signUpDialog.close();
 });

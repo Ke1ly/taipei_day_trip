@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>預定行程・台北一日遊</title>
     <link rel="stylesheet" href="/static/css/booking.css" />
+    <script src="https://cdn.jsdelivr.net/npm/validator@13.9.0/validator.min.js"></script>
     <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
     <script type="module" src="/static/js/controller/booking.js" defer></script>
   </head>
@@ -54,8 +55,8 @@
           </a>
         </div>
         <div class="header-right">
-          <a href="#" id="booking-btn">預定行程</a>
-          <a href="#" class="sign-in-or-sign-up"></a>
+          <a href="#" id="booking-btn"><div>預定行程</div></a>
+          <a href="#"> <div class="sign-in-or-sign-up"></div></a>
         </div>
       </div>
     </header>
@@ -105,31 +106,6 @@
       <hr />
       <section id="payment-information">
         <h3>信用卡付款資訊</h3>
-        <!-- <form>
-          <label
-            >卡片號碼：<input
-              type="text"
-              placeholder="**** **** **** ****"
-              pattern="[0-9]{12,19}"
-              required
-          /></label>
-
-          <label
-            >過期時間：<input
-              type="text"
-              placeholder="MM/YY"
-              pattern="[0-1][0-9]-[0-9][0-9]"
-              required
-          /></label>
-
-          <label
-            >驗證密碼：<input
-              type="text"
-              placeholder="CVV"
-              pattern="[0-9]{3,4}"
-              required
-          /></label>
-        </form> -->
         <form>
           <div class="card-form">
             <label for="card-number">卡片號碼：</label>

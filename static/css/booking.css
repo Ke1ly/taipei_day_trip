@@ -6,6 +6,7 @@
   font-family: "Noto Sans TC", sans-serif;
 }
 body {
+  background-color: #e9ecef;
   dialog.sign-in-popup,
   dialog.sign-up-popup {
     max-width: 340px;
@@ -93,40 +94,58 @@ body {
   dialog.sign-up-popup::backdrop {
     background: none;
   }
+
   header {
-    background-color: white;
+    background-color: #e9ecef;
     position: sticky;
     top: 0;
     z-index: 3;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     div.header {
-      display: grid;
-      grid-template-columns: minmax(0, 600px) minmax(0, 600px);
-      justify-self: center;
-    }
-    div.header-left {
-      justify-self: start;
-      align-self: center;
-      margin: 10px 10px;
-      a {
-        text-decoration: none;
-        h1 {
-          font-size: 30px;
-          font-weight: 700;
-          color: #448899;
+      margin: 0px auto;
+      max-width: 1200px;
+      display: flex;
+      justify-content: space-between;
+      div.header-left {
+        margin: 10px 10px;
+        a {
+          text-decoration: none;
+          h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #448899;
+          }
         }
       }
-    }
-    div.header-right {
-      justify-self: end;
-      align-self: center;
-      margin: 10px 10px;
-      a {
-        text-decoration: none;
-        color: #666666;
-        font-size: 15px;
-        font-weight: 450;
-        padding-left: 0.5rem;
+      div.header-right {
+        margin: 10px 0px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        a {
+          text-decoration: none;
+          color: #666666;
+          font-size: 15px;
+          font-weight: 450;
+          div {
+            width: 80px;
+            height: 30px;
+            margin-right: 10px;
+            background-color: #e9ecef;
+            box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2),
+              -5px -5px 8px rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            &:hover {
+              box-shadow: inset -5px -5px 8px rgba(255, 255, 255, 0.9),
+                inset 5px 5px 8px rgba(0, 0, 0, 0.2);
+            }
+          }
+        }
       }
     }
   }
@@ -155,6 +174,10 @@ body {
       max-width: 1000px;
       position: relative;
       margin: 0px auto;
+      border-radius: 10px;
+      padding: 20px 10px;
+      background-color: rgb(251, 251, 251);
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
       div.attraction-imformation {
         display: flex;
         flex-direction: row;
@@ -165,6 +188,7 @@ body {
           height: 200px;
           width: 250px;
           margin: 0px 10px;
+          border-radius: 10px;
         }
         div {
           flex: 1 1 300px;
@@ -193,8 +217,14 @@ body {
         position: absolute;
         top: 0px;
         right: 0px;
-        margin: 0px 10px;
+        margin: 15px;
         cursor: pointer;
+        opacity: 0.8;
+        transition: transform 0.3s ease;
+        &:hover {
+          opacity: 1;
+          transform: scale(1.1);
+        }
       }
     }
     section#contact-information {
@@ -215,6 +245,7 @@ body {
             width: 200px;
             height: 38px;
             border: 1px solid #e8e8e8;
+            border-radius: 5px;
             padding: 10px;
           }
         }
@@ -251,6 +282,8 @@ body {
           }
           div.border {
             border: 1px solid #e8e8e8;
+            border-radius: 5px;
+            background-color: white;
             div.tpfield {
               height: 38px;
               width: 200px;
@@ -262,7 +295,7 @@ body {
     }
     hr {
       height: 1px;
-      background-color: #e8e8e8;
+      background-color: #dadada;
       border: none;
       max-width: 1200px;
       margin: 40px auto;
@@ -326,12 +359,22 @@ body {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
+  body {
+    main {
+      section#booked-attrction {
+        margin: 0px 10px;
+      }
+    }
+  }
+}
+@media (max-width: 630px) {
   body {
     main {
       section#booked-attrction {
         img#delete-icon {
-          top: 400px;
+          bottom: 5px;
+          top: auto;
         }
         div.attraction-imformation {
           img#booking-img {
@@ -339,7 +382,8 @@ body {
           }
           div {
             flex: 1 1 500px;
-            margin-top: 30px;
+            margin: 30px 0px;
+            padding-left: 10px;
           }
         }
       }

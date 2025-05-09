@@ -6,7 +6,7 @@ export function renderInit(btnlist) {
 
   btnlist.push(authBtn, toBookingBtn);
   btnlist.forEach((button) => {
-    button.onclick = showPopUp;
+    button.onclick = showDialog;
   });
 }
 
@@ -14,14 +14,16 @@ export function renderInit(btnlist) {
 export function renderAuth() {
   const authBtn = document.querySelector(".sign-in-or-sign-up");
   const toBookingBtn = document.getElementById("booking-btn");
-  authBtn.textContent = "登出系統";
-  authBtn.onclick = signOut;
+  authBtn.textContent = "會員中心";
+  authBtn.addEventListener("click", () => {
+    location.replace("/member");
+  });
   toBookingBtn.addEventListener("click", () => {
     location.replace("/booking");
   });
 }
 
-function showPopUp() {
+function showDialog() {
   const signInDialog = document.querySelector(".sign-in-popup");
   const signInResponse = document.getElementById("sign-in-response");
   const signInForm = document.getElementById("sign-in-form");
@@ -29,11 +31,7 @@ function showPopUp() {
   signInResponse.replaceChildren();
   signInForm.reset();
   signInDialog.showModal();
-}
-
-function signOut() {
-  localStorage.removeItem("token");
-  location.reload();
+  signInDialog.classList.add("show");
 }
 
 // [all] 渲染註冊或登入時的錯誤訊息
@@ -67,26 +65,21 @@ export function renderAttractions(attractionsData) {
       const attractionA = attractionItem.querySelector("a");
       attractionA.href = `/attraction/${attractionsData["data"][i]["id"]}`;
 
-      // 渲染img
       const attractionImg = attractionItem.querySelector("img");
       let imgURL = attractionsData["data"][i]["images"][0];
       attractionImg.src = imgURL;
       attractionImg.alt = attractionsData["data"][i]["name"] + "的圖片";
 
-      // 渲染name
       const attractionName = attractionItem.querySelector("figcaption");
       attractionName.textContent = attractionsData["data"][i]["name"];
 
-      // 渲染category
       const div = attractionItem.querySelector("div");
       const attractionCategory = div.querySelector(".attraction-category");
       attractionCategory.textContent = attractionsData["data"][i]["category"];
 
-      //渲染 mrt
       const attractionMRT = div.querySelector(".attraction-mrt");
       attractionMRT.textContent = attractionsData["data"][i]["mrt"];
 
-      // 掛載至畫面上
       const attractionSection = document.getElementById("attraction-section");
       attractionSection.appendChild(attractionItem);
     }
@@ -116,17 +109,28 @@ export function RenderAttractionInfo(attractionData) {
   }
 }
 
+export function preloadImages(imageUrlList) {
+  const images = [];
+  for (let i = 0; i < imageUrlList.length; i++) {
+    images[i] = new Image(); //建立 Image 實例
+    images[i].src = imageUrlList[i]; //指定 Image 的 src（預載）
+  }
+  console.log("圖片預載完畢");
+  console.log(images);
+  return images;
+}
+
 // [attraction] 渲染單一景點的所有圖片
-export function RenderAttractionImg(attractionData) {
+export function RenderAttractionImg(images) {
   try {
     let slides = [];
     let indicators = [];
     const imgSection = document.getElementById("attraction-images");
     const indicatorsDiv = imgSection.querySelector(".indicators");
-    for (let i = 0; i < attractionData["data"]["images"].length; i++) {
+    for (let i = 0; i < images.length; i++) {
       let img = document.createElement("img");
       img.classList.add("slide");
-      img.src = attractionData["data"]["images"][i];
+      img.src = images[i].src;
       let indicator = document.createElement("span");
       indicator.classList.add("indicator");
       if (i == 0) {
@@ -189,7 +193,7 @@ export function renderNoBooking(userName) {
 }
 
 // [thankyou] 渲染付款訂單成功訊息
-export async function renderOrderSuccess(orderData) {
+export function renderOrderSuccess(orderData) {
   const orderNumber = document.getElementById("order-number");
   const status = document.getElementById("payment-status");
   orderNumber.textContent = orderData.data.number;
@@ -197,5 +201,24 @@ export async function renderOrderSuccess(orderData) {
     status.textContent = "已付款";
   } else {
     status.textContent = "尚未付款";
+  }
+}
+
+// [member] 渲染所有訂單資訊
+export function renderOrders(orders) {
+  for (let i = 0; i < orders["data"].length; i++) {
+    const template = document.getElementById("order-template");
+    let orderItem = template.content.cloneNode(true);
+    const orderNumber = orderItem.querySelector(".order-number");
+    orderNumber.textContent = orders["data"][i]["order_number"];
+
+    const orderTime = orderItem.querySelector(".order-time");
+    orderTime.textContent = orders["data"][i]["order_time"];
+
+    const orderPrice = orderItem.querySelector(".order-price");
+    orderPrice.textContent = orders["data"][i]["price"];
+
+    const orderTable = document.getElementById("order-table");
+    orderTable.appendChild(orderItem);
   }
 }
