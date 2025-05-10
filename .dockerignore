@@ -1,0 +1,24 @@
+# 環境檔
+.env
+*.env
+
+# Python 編譯結果
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE 和系統檔案
+.vscode/
+.idea/
+.DS_Store
+
+# 測試資料與記錄檔
+*.log
+*.sqlite3
+*.db
+*.bak
+
+# Git 版本控制
+.git/
+.gitignore
