@@ -10,9 +10,9 @@ import { handleAuth } from "../controller/common.js";
 let token = localStorage.getItem("token");
 handleAuth(token, {
   onSuccess: (authData) => {
-    if (authData.data.avatar !== null) {
-      document.getElementById("preview").src = authData.data.avatar;
-    }
+    // if (authData.data.avatar !== null) {
+    //   document.getElementById("preview").src = authData.data.avatar;
+    // }
     const updateName = document.getElementById("update-name");
     const updateEmail = document.getElementById("update-email");
     updateName.setAttribute("placeholder", authData.data.name);
@@ -79,12 +79,12 @@ signOutBtn.addEventListener("click", () => {
   location.reload();
 });
 
-const imageUploadInput = document.getElementById("image-upload");
-imageUploadInput.addEventListener("change", () => {
-  const file = imageUploadInput.files[0];
-  const url = URL.createObjectURL(file);
-  document.getElementById("preview").src = url;
-});
+// const imageUploadInput = document.getElementById("image-upload");
+// imageUploadInput.addEventListener("change", () => {
+//   const file = imageUploadInput.files[0];
+//   const url = URL.createObjectURL(file);
+//   document.getElementById("preview").src = url;
+// });
 
 // async function uploadImage() {
 //   const file = imageUploadInput.files[0];
