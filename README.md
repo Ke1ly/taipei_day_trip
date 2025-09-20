@@ -45,3 +45,6 @@ Applied MySQL connection pooling to reduce latency and enhance performance under
 ⦁ Docker & Docker Compose</br>
 ⦁ Nginx Reverse Proxy</br>
 ⦁ AWS EC2
+
+## System Architecture
+![image](https://github.com/Ke1ly/taipei_day_trip/blob/main/docs/imgages/architecture-design.png)
